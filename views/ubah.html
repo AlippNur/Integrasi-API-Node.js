@@ -1,0 +1,262 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ubah Data Siswa</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <style>
+        
+    </style>
+</head>
+
+<body class="py-5" style="background-color: rgb(177, 242, 243);">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>   
+<div class="container w-50 rounded-3 py-2 " style="background-color: rgb(215, 232, 245);">
+    <table id="example" class="table table-striped" style="width:100%"></table>
+    <h3 class="text-center"> Ubah Data Siswa</h3>
+    <form id="editForm">
+    <div class="mb-3">
+        <label  class="form-label">Foto</label>
+        <input class="form-control" type="file" name="foto" id="foto">
+    </div>
+      <div class="mb-3">
+        <label  class="form-label">Nama Lengkap</label>
+        <input type="text" class="form-control" name="nama_lengkap" id="nama_lengkap" >
+      </div>
+    <div class="mb-3">
+        <label class="form-label">Jenis Kelamin</label>
+      <select id="jenis_kelamin" name="jenis_kelamin" class="form-select" aria-label="Default select example">
+        <option selected disabled>Pilih Jenis Kelamin</option>
+        <option value="Laki-laki">laki-laki</option>
+        <option value="Perempuan">perempuan</option>
+      </select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Tanggal Daftar</label>
+        <input type="date" class="form-control" name="tanggal_daftar" id="tanggal_daftar" >
+    </div>
+    <div class="mb-3">
+        <label  class="form-label">Kelas</label>
+        <input type="text" class="form-control" name="kelas" id="kelas" >
+      </div>
+      <button type="submit" class="btn btn-success" name="=tambah" id="tambah">Ubah</button>
+
+
+  
+</form>
+</div>
+
+<script>
+
+
+document.addEventListener("DOMContentLoaded", function () {
+  const urlParams = new URLSearchParams(window.location.search);
+  const id_siswa = urlParams.get("id");
+
+  if (!id_siswa) {
+    alert("ID siswa tidak ditemukan!");
+    return;
+  }
+
+  fetch(`/siswa/${id_siswa}`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("Gagal mengambil data siswa.");
+      }
+      return response.json();
+    })
+    .then(data => {
+      if (data) {
+        const tanggalRaw = data.tanggal_daftar;
+        let tanggal = "";
+
+        if (tanggalRaw) {
+          const parsedDate = new Date(tanggalRaw);
+          if (!isNaN(parsedDate)) {
+            tanggal = parsedDate.toISOString().split("T")[0];
+          } else {
+            console.warn("Format tanggal tidak valid:", tanggalRaw);
+          }
+        }
+
+        document.getElementById("nama_lengkap").value = data.nama_lengkap || "";
+        document.getElementById("jenis_kelamin").value = data.jenis_kelamin || "";
+        document.getElementById("tanggal_daftar").value = tanggal;
+        document.getElementById("kelas").value = data.kelas || "";
+      } else {
+        alert("Data tidak ditemukan!");
+      }
+    })
+    .catch(error => {
+      alert("Terjadi kesalahan: " + error.message);
+    });
+
+  document.getElementById("editForm").addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    const updateData = new FormData();
+    const fileInput = document.getElementById("foto").files[0];
+
+    if (fileInput) {
+      updateData.append("foto", fileInput);
+    }
+
+    updateData.append("nama_lengkap", document.getElementById("nama_lengkap").value);
+    updateData.append("jenis_kelamin", document.getElementById("jenis_kelamin").value);
+    updateData.append("tanggal_daftar", document.getElementById("tanggal_daftar").value);
+    updateData.append("kelas", document.getElementById("kelas").value);
+
+    fetch(`/siswa/${id_siswa}`, {
+      method: "PUT",
+      body: updateData
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("Gagal memperbarui data.");
+      }
+      return response.text();
+    })
+    .then(message => {
+      localStorage.setItem("successMessage", "Data berhasil diupdate!");
+      window.location.href = "index.html";
+    })
+    .catch(error => {
+      alert("Terjadi kesalahan: " + error.message);
+    });
+
+  });
+});
+
+
+
+</script>
+</body>
+</html>
+ -->
+
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ubah Data Siswa</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="py-5" style="background-color: rgb(177, 242, 243);">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>   
+    <div class="container w-50 rounded-3 py-2" style="background-color: rgb(215, 232, 245);">
+        <h3 class="text-center">Ubah Data Siswa</h3>
+        <form id="editForm">
+            <div class="mb-3">
+                <label class="form-label">Foto</label>
+                <input class="form-control" type="file" name="foto" id="foto">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Nama Lengkap</label>
+                <input type="text" class="form-control" name="nama_lengkap" id="nama_lengkap">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Jenis Kelamin</label>
+                <select id="jenis_kelamin" name="jenis_kelamin" class="form-select">
+                    <option selected disabled>Pilih Jenis Kelamin</option>
+                    <option value="Laki-laki">Laki-laki</option>
+                    <option value="Perempuan">Perempuan</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Tanggal Daftar</label>
+                <input type="date" class="form-control" name="tanggal_daftar" id="tanggal_daftar">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Kelas</label>
+                <input type="text" class="form-control" name="kelas" id="kelas">
+            </div>
+            <div class="d-flex justify-content-between">
+                <button type="button" class="btn btn-secondary" onclick="window.history.back();">Back</button>
+                <button type="submit" class="btn btn-success">Ubah</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const id_siswa = urlParams.get("id");
+
+            if (!id_siswa) {
+                alert("ID siswa tidak ditemukan!");
+                return;
+            }
+
+            fetch(`/siswa/${id_siswa}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Gagal mengambil data siswa.");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data) {
+                        const tanggalRaw = data.tanggal_daftar;
+                        let tanggal = "";
+
+                        if (tanggalRaw) {
+                            const parsedDate = new Date(tanggalRaw);
+                            if (!isNaN(parsedDate)) {
+                                tanggal = parsedDate.toISOString().split("T")[0];
+                            } else {
+                                console.warn("Format tanggal tidak valid:", tanggalRaw);
+                            }
+                        }
+
+                        document.getElementById("nama_lengkap").value = data.nama_lengkap || "";
+                        document.getElementById("jenis_kelamin").value = data.jenis_kelamin || "";
+                        document.getElementById("tanggal_daftar").value = tanggal;
+                        document.getElementById("kelas").value = data.kelas || "";
+                    } else {
+                        alert("Data tidak ditemukan!");
+                    }
+                })
+                .catch(error => {
+                    alert("Terjadi kesalahan: " + error.message);
+                });
+
+            document.getElementById("editForm").addEventListener("submit", function (event) {
+                event.preventDefault();
+
+                const updateData = new FormData();
+                const fileInput = document.getElementById("foto").files[0];
+
+                if (fileInput) {
+                    updateData.append("foto", fileInput);
+                }
+
+                updateData.append("nama_lengkap", document.getElementById("nama_lengkap").value);
+                updateData.append("jenis_kelamin", document.getElementById("jenis_kelamin").value);
+                updateData.append("tanggal_daftar", document.getElementById("tanggal_daftar").value);
+                updateData.append("kelas", document.getElementById("kelas").value);
+
+                fetch(`/siswa/${id_siswa}`, {
+                    method: "PUT",
+                    body: updateData
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Gagal memperbarui data.");
+                    }
+                    return response.text();
+                })
+                .then(() => {
+                    localStorage.setItem("successMessage", "Data berhasil diupdate!");
+                    window.location.href = "index.html";
+                })
+                .catch(error => {
+                    alert("Terjadi kesalahan: " + error.message);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
